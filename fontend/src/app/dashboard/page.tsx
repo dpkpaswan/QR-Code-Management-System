@@ -101,11 +101,11 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="p-4 lg:p-8">
         {/* Header */}
         <div className="mb-8">
           <h1
-            className="text-2xl font-bold text-white mb-1"
+            className="text-xl lg:text-2xl font-bold text-white mb-1"
             style={{ fontFamily: 'Space Grotesk, sans-serif' }}
           >
             Dashboard
@@ -115,7 +115,7 @@ export default function DashboardPage() {
           </p>
         </div>
         {/* Quick Scanner CTA for coordinators */}
-        <div className="mb-6 flex items-center gap-4">
+        <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <a
             href="/scanner"
             className="px-4 py-3 rounded-xl font-semibold text-sm text-white"
@@ -127,7 +127,7 @@ export default function DashboardPage() {
           >
             Open Scanner
           </a>
-          <p className="text-xs" style={{ color: '#94A3B8' }}>
+          <p className="text-xs hidden sm:block" style={{ color: '#94A3B8' }}>
             Quick access for gate coordinators — opens the mobile-friendly scanner
           </p>
         </div>

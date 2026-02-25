@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { UploadCloud, File, AlertCircle, FileSpreadsheet } from 'lucide-react';
+import { UploadCloud, File as FileIcon, AlertCircle, FileSpreadsheet } from 'lucide-react';
 import { api } from '@/lib/api';
 
 interface ParsedParticipant {
@@ -23,9 +23,9 @@ export default function ExcelUploader() {
   const [uploadProgress, setUploadProgress] = useState('');
   const [uploadResult, setUploadResult] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
-  const selectedFileRef = useRef<File | null>(null);
+  const selectedFileRef = useRef<globalThis.File | null>(null);
 
-  const parseFile = useCallback(async (file: File) => {
+  const parseFile = useCallback(async (file: globalThis.File) => {
     setParseError('');
     setParsed(null);
     setUploadResult('');
@@ -150,207 +150,92 @@ export default function ExcelUploader() {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-3 mb-6">
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{
-            background: 'rgba(59,130,246,0.15)',
-            border: '1px solid rgba(59,130,246,0.3)',
-          }}
-        >
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
           <FileSpreadsheet size={16} style={{ color: '#3B82F6' }} />
         </div>
-        <h2
-          className="font-semibold text-white"
-          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-        >
-          Upload Participants Excel
-        </h2>
+        <h2 className="font-semibold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Upload Participants Excel</h2>
       </div>
 
       {/* Drop Zone */}
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragging(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileRef.current?.click()}
-        className="relative rounded-xl cursor-pointer transition-all duration-300 flex flex-col items-center justify-center py-12 mb-4"
-        style={{
-          border: `2px dashed ${dragging ? 'rgba(59,130,246,0.7)' : 'rgba(59,130,246,0.2)'}`,
-          background: dragging ? 'rgba(59,130,246,0.05)' : 'rgba(15,15,30,0.4)',
-          boxShadow: dragging ? '0 0 20px rgba(59,130,246,0.1)' : 'none',
-        }}
+        className="relative rounded-xl cursor-pointer transition-all duration-300 flex flex-col items-center justify-center py-8 sm:py-12 mb-4"
+        style={{ border: `2px dashed ${dragging ? 'rgba(59,130,246,0.7)' : 'rgba(59,130,246,0.2)'}`, background: dragging ? 'rgba(59,130,246,0.05)' : 'rgba(15,15,30,0.4)', boxShadow: dragging ? '0 0 20px rgba(59,130,246,0.1)' : 'none' }}
       >
-        <UploadCloud
-          size={40}
-          className="mb-3"
-          style={{ color: dragging ? '#3B82F6' : '#334155' }}
-        />
-        <p className="font-medium mb-1" style={{ color: '#94A3B8' }}>
-          Drag & drop .xlsx file here
-        </p>
-        <p className="text-xs" style={{ color: '#475569' }}>
-          or click to browse
-        </p>
+        <UploadCloud size={40} className="mb-3" style={{ color: dragging ? '#3B82F6' : '#334155' }} />
+        <p className="font-medium mb-1" style={{ color: '#94A3B8' }}>Drag & drop .xlsx file here</p>
+        <p className="text-xs" style={{ color: '#475569' }}>or click to browse</p>
         {fileName && (
-          <div
-            className="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-lg"
-            style={{
-              background: 'rgba(59,130,246,0.1)',
-              border: '1px solid rgba(59,130,246,0.2)',
-            }}
-          >
-            <File size={14} style={{ color: '#3B82F6' }} />
-            <span className="text-xs" style={{ color: '#3B82F6' }}>
-              {fileName}
-            </span>
+          <div className="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+            <FileIcon size={14} style={{ color: '#3B82F6' }} />
+            <span className="text-xs" style={{ color: '#3B82F6' }}>{fileName}</span>
           </div>
         )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".xlsx,.xls"
-          className="hidden"
-          onChange={handleFileInput}
-        />
+        <input ref={fileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleFileInput} />
       </div>
 
-      <p className="text-xs mb-6" style={{ color: '#334155' }}>
-        Required columns: {REQUIRED_COLUMNS.join(' · ')}
-      </p>
+      <p className="text-xs mb-6" style={{ color: '#334155' }}>Required columns: {REQUIRED_COLUMNS.join(' · ')}</p>
 
       {parseError && (
-        <div
-          className="flex items-start gap-3 px-4 py-3 rounded-xl mb-4"
-          style={{
-            background: 'rgba(244,63,94,0.08)',
-            border: '1px solid rgba(244,63,94,0.25)',
-          }}
-        >
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl mb-4" style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.25)' }}>
           <AlertCircle size={16} className="text-rose-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm text-rose-400">{parseError}</p>
-            {errorDetail && (
-              <pre className="mt-2 text-xs text-rose-200 max-h-36 overflow-auto" style={{ whiteSpace: 'pre-wrap' }}>
-                {errorDetail}
-              </pre>
-            )}
+            {errorDetail && <pre className="mt-2 text-xs text-rose-200 max-h-36 overflow-auto" style={{ whiteSpace: 'pre-wrap' }}>{errorDetail}</pre>}
           </div>
         </div>
       )}
 
       {parsed && (
-        <>
+        <div>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-medium" style={{ color: '#10B981' }}>
-              ✅ {parsed.length} participants found in file
-            </p>
-            <span className="text-xs" style={{ color: '#475569' }}>
-              Showing first 10 rows
-            </span>
+            <p className="text-sm font-medium" style={{ color: '#10B981' }}>✅ {parsed.length} participants found in file</p>
+            <span className="text-xs" style={{ color: '#475569' }}>Showing first 10 rows</span>
           </div>
 
-          <div
-            className="rounded-xl overflow-hidden mb-4"
-            style={{ border: '1px solid rgba(59,130,246,0.1)' }}
-          >
-            <div className="overflow-x-auto max-h-64">
-              <table className="w-full data-table">
-                <thead style={{ background: 'rgba(10,10,20,0.8)' }}>
-                  <tr>
-                    <th>Participant ID</th>
-                    <th>Name</th>
-                    <th>College</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {parsed.slice(0, 10).map((p, i) => (
-                    <tr key={i}>
-                      <td
-                        style={{
-                          fontFamily: 'JetBrains Mono, monospace',
-                          fontSize: '11px',
-                          color: '#3B82F6',
-                        }}
-                      >
-                        {p.participant_id}
-                      </td>
-                      <td style={{ color: '#F1F5F9' }}>{p.name}</td>
-                      <td style={{ color: '#94A3B8' }}>{p.college_name}</td>
-                      <td style={{ color: '#475569', fontSize: '11px' }}>{p.email}</td>
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="rounded-xl overflow-hidden mb-4" style={{ border: '1px solid rgba(59,130,246,0.1)' }}>
+              <div className="overflow-x-auto max-h-64">
+                <table className="w-full data-table min-w-[500px]">
+                  <thead style={{ background: 'rgba(10,10,20,0.8)' }}>
+                    <tr>
+                      <th>Participant ID</th>
+                      <th>Name</th>
+                      <th>College</th>
+                      <th>Email</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {parsed.slice(0, 10).map((p, i) => (
+                      <tr key={i}>
+                        <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#3B82F6' }}>{p.participant_id}</td>
+                        <td style={{ color: '#F1F5F9' }}>{p.name}</td>
+                        <td style={{ color: '#94A3B8' }}>{p.college_name}</td>
+                        <td style={{ color: '#475569', fontSize: '11px' }}>{p.email}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          {uploadProgress && (
-            <div
-              className="flex items-center gap-3 px-4 py-3 rounded-xl mb-4"
-              style={{
-                background: 'rgba(59,130,246,0.08)',
-                border: '1px solid rgba(59,130,246,0.2)',
-              }}
-            >
-              <span className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
-              <p className="text-sm" style={{ color: '#3B82F6' }}>
-                {uploadProgress}
-              </p>
-            </div>
-          )}
+          {uploadProgress && <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
+            <span className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+            <p className="text-sm" style={{ color: '#3B82F6' }}>{uploadProgress}</p>
+          </div>}
 
-          {uploadResult && (
-            <div
-              className="px-4 py-3 rounded-xl mb-4"
-              style={{
-                background: uploadResult.startsWith('✅')
-                  ? 'rgba(16,185,129,0.08)'
-                  : 'rgba(244,63,94,0.08)',
-                border: uploadResult.startsWith('✅')
-                  ? '1px solid rgba(16,185,129,0.25)'
-                  : '1px solid rgba(244,63,94,0.25)',
-              }}
-            >
-              <p
-                className="text-sm"
-                style={{
-                  color: uploadResult.startsWith('✅') ? '#10B981' : '#F43F5E',
-                }}
-              >
-                {uploadResult}
-              </p>
-            </div>
-          )}
+          {uploadResult && <div className="px-4 py-3 rounded-xl mb-4" style={{ background: uploadResult.startsWith('✅') ? 'rgba(16,185,129,0.08)' : 'rgba(244,63,94,0.08)', border: uploadResult.startsWith('✅') ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(244,63,94,0.25)' }}>
+            <p className="text-sm" style={{ color: uploadResult.startsWith('✅') ? '#10B981' : '#F43F5E' }}>{uploadResult}</p>
+          </div>}
 
-          {/* Debug: try upload directly to server even if client parsing failed */}
-          {selectedFileRef.current && (
-            <div className="mb-4">
-              <button
-                onClick={handleForceUpload}
-                disabled={uploading}
-                className="w-full py-2 rounded-lg font-medium text-sm text-white btn-glow disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
-                {uploading ? 'UPLOADING...' : 'Try upload file to server (skip preview)'}
-              </button>
-            </div>
-          )}
+          {selectedFileRef.current && <div className="mb-4"><button onClick={handleForceUpload} disabled={uploading} className="w-full py-2 rounded-lg font-medium text-sm text-white btn-glow disabled:opacity-50 disabled:cursor-not-allowed" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{uploading ? 'UPLOADING...' : 'Try upload file to server (skip preview)'}</button></div>}
 
-          <button
-            onClick={handleUpload}
-            disabled={uploading}
-            className="w-full py-3 rounded-xl font-semibold text-sm text-white btn-glow disabled:opacity-50 disabled:cursor-not-allowed tracking-wide"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
-            {uploading
-              ? 'UPLOADING...'
-              : `UPLOAD ${parsed.length} PARTICIPANTS TO DATABASE`}
-          </button>
-        </>
+          <button onClick={handleUpload} disabled={uploading} className="w-full py-3 rounded-xl font-semibold text-sm text-white btn-glow disabled:opacity-50 disabled:cursor-not-allowed tracking-wide" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{uploading ? 'UPLOADING...' : `UPLOAD ${parsed.length} PARTICIPANTS TO DATABASE`}</button>
+        </div>
       )}
     </div>
   );

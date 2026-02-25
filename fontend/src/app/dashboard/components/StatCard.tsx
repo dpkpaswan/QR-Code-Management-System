@@ -63,7 +63,7 @@ export default function StatCard({
 
   return (
     <div
-      className="glass-card p-6 rounded-2xl transition-all duration-300 hover:scale-[1.02] group"
+      className="glass-card p-4 sm:p-5 rounded-2xl transition-all duration-300 hover:scale-[1.02] group"
       style={{ boxShadow: '0 0 0 1px rgba(59,130,246,0.1)' }}
     >
       <div className="flex items-start justify-between mb-4">
@@ -79,12 +79,12 @@ export default function StatCard({
       </div>
       <div className="count-up">
         <p
-          className="text-3xl font-bold mb-1"
+          className="text-2xl sm:text-3xl font-bold mb-1"
           style={{ fontFamily: 'Space Grotesk, sans-serif', color }}
         >
           {displayValue.toLocaleString()}
         </p>
-        <p className="text-sm font-medium" style={{ color: '#94A3B8' }}>
+        <p className="text-sm font-medium truncate" style={{ color: '#94A3B8' }}>
           {title}
         </p>
         {subtitle && (

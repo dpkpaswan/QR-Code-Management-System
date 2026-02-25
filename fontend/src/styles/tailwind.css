@@ -253,3 +253,41 @@ body {
 #reader__dashboard {
   display: none !important;
 }
+
+/* Mobile & iOS friendly fixes */
+/* Prevent horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* iOS input zoom prevention - all inputs minimum 16px */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+@media (min-width: 640px) {
+  input, select, textarea {
+    font-size: inherit !important;
+  }
+}
+
+/* Safe area support */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Touch-friendly tap targets - minimum 44px */
+button, a {
+  min-height: 44px;
+}
+
+/* Sidebar nav links on mobile — bigger tap targets */
+.sidebar-link {
+  min-height: 44px !important;
+}
+
+/* Smooth momentum scrolling on iOS */
+.overflow-y-auto, .overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}

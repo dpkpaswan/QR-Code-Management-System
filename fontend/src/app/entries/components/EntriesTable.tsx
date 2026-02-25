@@ -151,7 +151,7 @@ export default function EntriesTable() {
             color: '#10B981',
           }}>
           {exporting ? (
-            <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
           ) : (
             <Icon name="DownloadIcon" size={16} />
           )}
@@ -182,74 +182,76 @@ export default function EntriesTable() {
             <button onClick={fetchEntries} className="text-xs px-4 py-2 rounded-lg btn-glow text-white">Retry</button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full data-table min-w-[800px]">
-              <thead style={{ background: 'rgba(10,10,20,0.8)' }}>
-                <tr>
-                  <th>#</th>
-                  <th>Participant ID</th>
-                  <th>Name</th>
-                  <th>College</th>
-                  <th>Day</th>
-                  <th>Scanned At</th>
-                  <th>Scanned By</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i}>
-                      {Array.from({ length: 7 }).map((_, j) => (
-                        <td key={j}><div className="skeleton h-4 rounded" style={{ width: `${50 + Math.random() * 50}%` }} /></td>
-                      ))}
-                    </tr>
-                  ))
-                ) : entries.length === 0 ? (
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full data-table min-w-[640px]">
+                <thead style={{ background: 'rgba(10,10,20,0.8)' }}>
                   <tr>
-                    <td colSpan={7}>
-                      <div className="py-16 text-center">
-                        <Icon name="QrCodeIcon" size={40} className="mx-auto mb-3" style={{ color: '#1e3a5f' }} />
-                        <p className="font-medium mb-1" style={{ color: '#475569' }}>No entries recorded</p>
-                        <p className="text-xs" style={{ color: '#334155' }}>
-                          {search || dayFilter !== 'all' ?'No entries match your filters' :'Entries will appear here once scanning begins'}
-                        </p>
-                      </div>
-                    </td>
+                    <th>#</th>
+                    <th>Participant ID</th>
+                    <th>Name</th>
+                    <th className="hidden sm:table-cell">College</th>
+                    <th>Day</th>
+                    <th>Scanned At</th>
+                    <th className="hidden sm:table-cell">Scanned By</th>
                   </tr>
-                ) : (
-                  entries.map((entry, idx) => (
-                    <tr key={entry.id}>
-                      <td style={{ color: '#334155', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}>
-                        {page * PAGE_SIZE + idx + 1}
+                </thead>
+                <tbody>
+                  {loading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <tr key={i}>
+                        {Array.from({ length: 7 }).map((_, j) => (
+                          <td key={j}><div className="skeleton h-4 rounded" style={{ width: (50 + Math.random() * 50) + '%' }}></div></td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : entries.length === 0 ? (
+                    <tr>
+                      <td colSpan={7}>
+                        <div className="py-16 text-center">
+                          <Icon name="QrCodeIcon" size={40} className="mx-auto mb-3" style={{ color: '#1e3a5f' }} />
+                          <p className="font-medium mb-1" style={{ color: '#475569' }}>No entries recorded</p>
+                          <p className="text-xs" style={{ color: '#334155' }}>
+                            {search || dayFilter !== 'all' ? 'No entries match your filters' : 'Entries will appear here once scanning begins'}
+                          </p>
+                        </div>
                       </td>
-                      <td>
-                        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#3B82F6' }}>
-                          {entry.participant_id}
-                        </span>
-                      </td>
-                      <td className="font-medium" style={{ color: '#F1F5F9' }}>{entry.name || '—'}</td>
-                      <td style={{ color: '#94A3B8', maxWidth: '160px' }}>
-                        <span className="truncate block">{entry.college_name || '—'}</span>
-                      </td>
-                      <td>
-                        <span className="px-2 py-1 rounded-full text-xs font-bold"
-                          style={{
-                            background: entry.event_day === 1 ? 'rgba(59,130,246,0.15)' : 'rgba(139,92,246,0.15)',
-                            color: entry.event_day === 1 ? '#3B82F6' : '#8B5CF6',
-                            border: `1px solid ${entry.event_day === 1 ? 'rgba(59,130,246,0.3)' : 'rgba(139,92,246,0.3)'}`,
-                          }}>
-                          Day {entry.event_day}
-                        </span>
-                      </td>
-                      <td style={{ color: '#475569', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', whiteSpace: 'nowrap' }}>
-                        {formatDateTime(entry.scanned_at)}
-                      </td>
-                      <td style={{ color: '#94A3B8', fontSize: '12px' }}>{entry.scanned_by || '—'}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    entries.map((entry, idx) => (
+                      <tr key={entry.id}>
+                        <td style={{ color: '#334155', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}>
+                          {page * PAGE_SIZE + idx + 1}
+                        </td>
+                        <td>
+                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#3B82F6' }}>
+                            {entry.participant_id}
+                          </span>
+                        </td>
+                        <td className="font-medium" style={{ color: '#F1F5F9' }}>{entry.name || '—'}</td>
+                        <td className="hidden sm:table-cell" style={{ color: '#94A3B8', maxWidth: '160px' }}>
+                          <span className="truncate block">{entry.college_name || '—'}</span>
+                        </td>
+                        <td>
+                          <span className="px-2 py-1 rounded-full text-xs font-bold"
+                            style={{
+                              background: entry.event_day === 1 ? 'rgba(59,130,246,0.15)' : 'rgba(139,92,246,0.15)',
+                              color: entry.event_day === 1 ? '#3B82F6' : '#8B5CF6',
+                              border: `1px solid ${entry.event_day === 1 ? 'rgba(59,130,246,0.3)' : 'rgba(139,92,246,0.3)'}`,
+                            }}>
+                            Day {entry.event_day}
+                          </span>
+                        </td>
+                        <td style={{ color: '#475569', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                          {formatDateTime(entry.scanned_at)}
+                        </td>
+                        <td className="hidden sm:table-cell" style={{ color: '#94A3B8', fontSize: '12px' }}>{entry.scanned_by || '—'}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

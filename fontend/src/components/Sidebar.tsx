@@ -22,7 +22,7 @@ const navItems = [
   { href: '/entries', label: 'Entries', icon: ClipboardList },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ mobileOpen, setMobileOpen }: { mobileOpen?: boolean; setMobileOpen?: (v: boolean) => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const [activeDay, setActiveDay] = useState<EventDay | null | undefined>(undefined);
@@ -32,6 +32,12 @@ export default function Sidebar() {
     const interval = setInterval(fetchActiveDay, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-close mobile sidebar on route change
+  useEffect(() => {
+    if (typeof setMobileOpen === 'function') setMobileOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const fetchActiveDay = async () => {
     try {
@@ -50,14 +56,33 @@ export default function Sidebar() {
   };
 
   return (
-    <aside
-      className="fixed left-0 top-0 h-full w-60 flex flex-col z-40"
-      style={{
-        background: 'rgba(10,10,20,0.95)',
-        borderRight: '1px solid rgba(59,130,246,0.1)',
-        backdropFilter: 'blur(20px)',
-      }}
-    >
+    <div>
+      {/* Overlay for mobile when sidebar is open */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-30 lg:hidden"
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(2px)' }}
+          onClick={() => setMobileOpen && setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed left-0 top-0 h-full w-60 flex flex-col z-40 transition-transform duration-300 ease-in-out ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
+        style={{
+          background: 'rgba(10,10,20,0.95)',
+          borderRight: '1px solid rgba(59,130,246,0.1)',
+          backdropFilter: 'blur(20px)',
+        }}
+      >
+        {/* Mobile X button */}
+        <button
+          className="absolute top-4 right-4 lg:hidden text-slate-400"
+          onClick={() => setMobileOpen && setMobileOpen(false)}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
       {/* Logo */}
       <div className="px-4 py-5 border-b" style={{ borderColor: 'rgba(59,130,246,0.1)' }}>
         <div className="flex items-center gap-3">
@@ -142,5 +167,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </div>
   );
 }

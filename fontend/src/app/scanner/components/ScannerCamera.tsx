@@ -128,7 +128,7 @@ export default function ScannerCamera({ coordinatorName, onNewEntry }: Props) {
   return (
     <div className="relative">
       {/* Camera Container */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ background: '#000', minHeight: '320px' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ background: '#000', minHeight: '240px', maxWidth: '100%', aspectRatio: '1' }}>
         <div id="qr-reader" className="w-full" />
 
         {/* Corner brackets */}

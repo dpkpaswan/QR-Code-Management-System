@@ -44,7 +44,7 @@ export default function ScannerPage() {
     <div className="min-h-screen" style={{ background: '#0A0A0F' }}>
       <div className="mesh-bg" />
       <div className="grid-pattern" />
-      <div className="relative z-10 max-w-md mx-auto px-4 py-6 pb-10">
+      <div className="relative z-10 max-w-md mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-16 sm:pb-10" style={{ paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -127,6 +127,7 @@ export default function ScannerPage() {
                 : '1px solid rgba(59,130,246,0.2)',
               color: '#F1F5F9',
               fontFamily: 'DM Sans, sans-serif',
+              fontSize: '16px',
             }}
           />
         </div>
