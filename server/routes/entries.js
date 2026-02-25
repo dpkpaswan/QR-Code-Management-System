@@ -1,12 +1,12 @@
 const express = require('express');
 const XLSX = require('xlsx');
 const supabase = require('../lib/supabase');
-const { authMiddleware } = require('./auth');
+const { authMiddleware, roleMiddleware } = require('./auth');
 
 const router = express.Router();
 
-// GET /api/entries — get all entries
-router.get('/', authMiddleware, async (req, res) => {
+// GET /api/entries — get all entries (admin + registration + coordinator)
+router.get('/', authMiddleware, roleMiddleware('admin', 'registration', 'coordinator'), async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('entries')
@@ -21,8 +21,8 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-// GET /api/entries/export — export 2-sheet Excel (Day 1 + Day 2)
-router.get('/export', authMiddleware, async (req, res) => {
+// GET /api/entries/export — export 2-sheet Excel (admin + registration only)
+router.get('/export', authMiddleware, roleMiddleware('admin', 'registration'), async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('entries')

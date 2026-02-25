@@ -2,14 +2,14 @@ const express = require('express');
 const multer = require('multer');
 const XLSX = require('xlsx');
 const supabase = require('../lib/supabase');
-const { authMiddleware } = require('./auth');
+const { authMiddleware, roleMiddleware } = require('./auth');
 const logger = require('../lib/logger');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-// POST /api/participants/upload - Upload Excel and upsert participants
-router.post('/upload', authMiddleware, upload.single('file'), async (req, res) => {
+// POST /api/participants/upload - Upload Excel and upsert participants (admin + data_upload)
+router.post('/upload', authMiddleware, roleMiddleware('admin', 'data_upload'), upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
@@ -17,7 +17,7 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
 
         // Log upload metadata for debugging
         logger.info('Upload received: name=%s size=%d mimetype=%s uploader=%s',
-          req.file.originalname, req.file.size, req.file.mimetype, req.ip);
+            req.file.originalname, req.file.size, req.file.mimetype, req.ip);
 
         let workbook;
         let rows = [];
@@ -107,8 +107,8 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
     }
 });
 
-// GET /api/participants - Get all participants
-router.get('/', authMiddleware, async (req, res) => {
+// GET /api/participants - Get all participants (admin + data_upload)
+router.get('/', authMiddleware, roleMiddleware('admin', 'data_upload'), async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('participants')

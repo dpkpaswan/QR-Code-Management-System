@@ -1,10 +1,10 @@
 const express = require('express');
 const supabase = require('../lib/supabase');
-const { authMiddleware } = require('./auth');
+const { authMiddleware, roleMiddleware } = require('./auth');
 
 const router = express.Router();
 
-// GET /api/event-days — get all event days
+// GET /api/event-days — get all event days (public — needed by scanner)
 router.get('/', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -20,8 +20,8 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST /api/event-days/activate — activate a specific day (1 or 2)
-router.post('/activate', authMiddleware, async (req, res) => {
+// POST /api/event-days/activate — activate a specific day (admin only)
+router.post('/activate', authMiddleware, roleMiddleware('admin'), async (req, res) => {
     try {
         const { dayId } = req.body;
         if (!dayId || ![1, 2].includes(dayId)) {
@@ -53,8 +53,8 @@ router.post('/activate', authMiddleware, async (req, res) => {
     }
 });
 
-// POST /api/event-days/deactivate — deactivate all days
-router.post('/deactivate', authMiddleware, async (req, res) => {
+// POST /api/event-days/deactivate — deactivate all days (admin only)
+router.post('/deactivate', authMiddleware, roleMiddleware('admin'), async (req, res) => {
     try {
         const { error } = await supabase
             .from('event_days')

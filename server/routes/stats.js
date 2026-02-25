@@ -1,11 +1,11 @@
 const express = require('express');
 const supabase = require('../lib/supabase');
-const { authMiddleware } = require('./auth');
+const { authMiddleware, roleMiddleware } = require('./auth');
 
 const router = express.Router();
 
-// GET /api/stats — day-wise stats breakdown
-router.get('/', authMiddleware, async (req, res) => {
+// GET /api/stats — day-wise stats breakdown (admin only)
+router.get('/', authMiddleware, roleMiddleware('admin'), async (req, res) => {
     try {
         // Total participants
         const { count: totalParticipants } = await supabase

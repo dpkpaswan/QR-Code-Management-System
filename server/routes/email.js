@@ -2,7 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
 const supabase = require("../lib/supabase");
-const { authMiddleware } = require("./auth");
+const { authMiddleware, roleMiddleware } = require("./auth");
 
 const router = express.Router();
 
@@ -278,7 +278,7 @@ const generateEmailTemplate = (participant) => {
 /* ================================
    ROUTE: Send Emails (SSE)
 ================================ */
-router.post("/send", authMiddleware, async (req, res) => {
+router.post("/send", authMiddleware, roleMiddleware("admin", "data_upload"), async (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
