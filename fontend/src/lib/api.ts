@@ -3,11 +3,11 @@ import { authHeaders } from './auth';
 const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export const api = {
-    login: (password: string) =>
+    login: (username: string, password: string) =>
         fetch(`${BASE}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password }),
+            body: JSON.stringify({ username, password }),
         }),
 
     getStats: () =>

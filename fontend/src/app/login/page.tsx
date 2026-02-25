@@ -3,12 +3,13 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, Shield } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Shield, User } from 'lucide-react';
 import { api } from '@/lib/api';
-import { setToken } from '@/lib/auth';
+import { setToken, setUserInfo, getDefaultPage } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,19 +19,20 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password.trim()) return;
+    if (!username.trim() || !password.trim()) return;
     setLoading(true);
     setError('');
 
     try {
-      const res = await api.login(password);
+      const res = await api.login(username.trim(), password);
       const data = await res.json();
 
       if (res.ok && data.token) {
         setToken(data.token);
-        router.push('/dashboard');
+        setUserInfo(data.user);
+        router.push(getDefaultPage(data.user.role));
       } else {
-        setError(data.error || 'Invalid password');
+        setError(data.error || 'Invalid credentials');
         setShake(true);
         setTimeout(() => setShake(false), 600);
         setPassword('');
@@ -97,7 +99,7 @@ export default function LoginPage() {
             EVENT CONTROL PANEL
           </h1>
           <p className="text-sm" style={{ color: '#475569' }}>
-            Restricted Admin Access
+            Authorized Personnel Only
           </p>
         </div>
 
@@ -111,21 +113,57 @@ export default function LoginPage() {
         />
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Username */}
           <div>
             <label
               className="block text-xs font-semibold mb-2 uppercase tracking-widest"
               style={{ color: '#475569' }}
             >
-              Admin Password
+              Username
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+                required
+                autoComplete="username"
+                className="w-full px-4 py-3 pl-11 rounded-xl text-sm outline-none transition-all focus:border-blue-500/60"
+                style={{
+                  background: 'rgba(15,15,30,0.8)',
+                  border: error
+                    ? '1px solid rgba(244,63,94,0.5)'
+                    : '1px solid rgba(59,130,246,0.2)',
+                  color: '#F1F5F9',
+                  fontFamily: 'DM Sans, sans-serif',
+                }}
+              />
+              <User
+                size={16}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                style={{ color: '#475569' }}
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label
+              className="block text-xs font-semibold mb-2 uppercase tracking-widest"
+              style={{ color: '#475569' }}
+            >
+              Password
             </label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password"
+                placeholder="Enter your password"
                 required
+                autoComplete="current-password"
                 className="w-full px-4 py-3 pr-12 rounded-xl text-sm outline-none transition-all focus:border-blue-500/60"
                 style={{
                   background: 'rgba(15,15,30,0.8)',
@@ -162,7 +200,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading || !password.trim()}
+            disabled={loading || !username.trim() || !password.trim()}
             className="w-full py-3 rounded-xl font-semibold text-sm tracking-widest text-white btn-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
             style={{ fontFamily: 'Space Grotesk, sans-serif', letterSpacing: '0.1em' }}
           >
@@ -172,7 +210,7 @@ export default function LoginPage() {
                 VERIFYING...
               </span>
             ) : (
-              'ACCESS DASHBOARD'
+              'SIGN IN'
             )}
           </button>
         </form>

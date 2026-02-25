@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import { isLoggedIn } from '@/lib/auth';
+import { isLoggedIn, getUserRole, canAccessPage, getDefaultPage } from '@/lib/auth';
 import { Menu } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -15,10 +15,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!isLoggedIn()) {
       router.push('/login');
-    } else {
-      setAuthorized(true);
+      return;
     }
-  }, [router]);
+
+    const role = getUserRole();
+    if (!role) {
+      router.push('/login');
+      return;
+    }
+
+    // Check if user has permission to access this page
+    if (!canAccessPage(role, pathname)) {
+      router.push(getDefaultPage(role));
+      return;
+    }
+
+    setAuthorized(true);
+  }, [router, pathname]);
 
   if (!authorized) {
     return (

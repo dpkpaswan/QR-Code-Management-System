@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, Entry } from '@/lib/supabase';
 import Icon from '@/components/ui/AppIcon';
+import { getUserRole, canExportEntries } from '@/lib/auth';
 
 type DayFilter = 'all' | '1' | '2';
 
@@ -18,6 +19,8 @@ export default function EntriesTable() {
   const [dayFilter, setDayFilter] = useState<DayFilter>('all');
   const [exporting, setExporting] = useState(false);
   const [exportMsg, setExportMsg] = useState('');
+  const userRole = getUserRole();
+  const showExport = userRole ? canExportEntries(userRole) : false;
 
   const fetchEntries = useCallback(async () => {
     setLoading(true);
@@ -66,7 +69,7 @@ export default function EntriesTable() {
         return;
       }
 
-      const XLSX = (await import('xlsx')).default;
+      const XLSX = await import('xlsx');
       const wb = XLSX.utils.book_new();
 
       const day1 = allEntries.filter(e => e.event_day === 1);
@@ -141,22 +144,24 @@ export default function EntriesTable() {
           </div>
         </div>
 
-        <button
-          onClick={handleExport}
-          disabled={exporting}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
-          style={{
-            background: 'rgba(16,185,129,0.15)',
-            border: '1px solid rgba(16,185,129,0.3)',
-            color: '#10B981',
-          }}>
-          {exporting ? (
-            <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
-          ) : (
-            <Icon name="DownloadIcon" size={16} />
-          )}
-          {exporting ? 'Exporting...' : '📥 Download Entries Excel'}
-        </button>
+        {showExport && (
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
+            style={{
+              background: 'rgba(16,185,129,0.15)',
+              border: '1px solid rgba(16,185,129,0.3)',
+              color: '#10B981',
+            }}>
+            {exporting ? (
+              <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              <Icon name="DownloadIcon" size={16} />
+            )}
+            {exporting ? 'Exporting...' : '📥 Download Entries Excel'}
+          </button>
+        )}
       </div>
 
       {exportMsg && (
