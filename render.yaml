@@ -1,0 +1,38 @@
+# Example Render manifest for deploying the backend as a Web Service
+# Replace `repo` with your GitHub repository if you want Render to auto-deploy
+services:
+  - type: web
+    name: EventQR-Backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+        scope: private
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+        scope: private
+      - key: SMTP_HOST
+        value: ${SMTP_HOST}
+        scope: private
+      - key: SMTP_PORT
+        value: ${SMTP_PORT}
+        scope: private
+      - key: SMTP_USER
+        value: ${SMTP_USER}
+        scope: private
+      - key: SMTP_PASS
+        value: ${SMTP_PASS}
+        scope: private
+      - key: EVENT_NAME
+        value: ${EVENT_NAME}
+        scope: private
+      - key: ADMIN_PASSWORD
+        value: ${ADMIN_PASSWORD}
+        scope: private
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+        scope: private

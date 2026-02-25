@@ -1,0 +1,3 @@
+// Placeholder shim for legacy Vite dev client requests
+// This file prevents 404 spam from previously-registered service workers or cached pages.
+console.info('[shim] @vite/client placeholder loaded');
