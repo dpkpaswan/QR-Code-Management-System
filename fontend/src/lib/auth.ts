@@ -31,7 +31,21 @@ export function clearToken(): void {
 }
 
 export function isLoggedIn(): boolean {
-  return !!getToken();
+  return !!getToken() && !isTokenExpired();
+}
+
+export function isTokenExpired(): boolean {
+  const token = getToken();
+  if (!token) return true;
+  try {
+    const parts = token.split('.');
+    if (parts.length < 2) return true;
+    const payload = JSON.parse(atob(parts[1]));
+    const now = Math.floor(Date.now() / 1000);
+    return payload.exp ? payload.exp < now : false;
+  } catch {
+    return true;
+  }
 }
 
 export function authHeaders(): Record<string, string> {
@@ -101,8 +115,39 @@ export function useAuthCheck() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    const token = getToken();
+    const user = getUserInfo();
+
+    if (!token || !user) {
       router.push('/login');
+      return;
+    }
+
+    // Validate JWT expiry client-side
+    try {
+      const parts = token.split('.');
+      const payload = JSON.parse(atob(parts[1]));
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.exp && payload.exp < now) {
+        clearToken();
+        router.push('/login');
+        return;
+      }
+    } catch {
+      clearToken();
+      router.push('/login');
+      return;
+    }
+
+    // Check role permissions for current path
+    try {
+      const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+      if (!canAccessPage(user.role, pathname)) {
+        router.replace(getDefaultPage(user.role));
+        return;
+      }
+    } catch {
+      // ignore and allow
     }
   }, [router]);
 

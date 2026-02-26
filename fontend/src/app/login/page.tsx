@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, AlertCircle, Shield, User } from 'lucide-react';
 import { api } from '@/lib/api';
-import { setToken, setUserInfo, getDefaultPage } from '@/lib/auth';
+import { setToken, setUserInfo, getDefaultPage, getToken, getUserInfo } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +16,17 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [shake, setShake] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    const token = getToken();
+    const user = getUserInfo();
+    if (token && user) {
+      router.replace(getDefaultPage(user.role));
+      return; // let redirect happen
+    }
+    setCheckingAuth(false);
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +56,17 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: '#0A0A0F' }}
+      >
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div

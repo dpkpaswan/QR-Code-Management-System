@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     await transporter.sendMail({
       from: `"${eventName}" <${process.env.SMTP_USER}>`,
       to: participant.email,
-      subject: `Your Entry QR Code — ${eventName}`,
+      subject: `Your Entry QR Code — ${eventName} [${participant.participant_id}]`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -71,6 +71,12 @@ export async function POST(request: NextRequest) {
               <p style="color:#475569;font-size:12px;margin:0;">Present this QR code at the entrance gate for check-in.</p>
             </div>
           </div>
+          <div style="display:none;white-space:nowrap;font:15px courier;line-height:0;">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </div>
+          <span style="display:none !important; opacity:0; color:transparent; font-size:0px;">${Date.now()}-${participant.participant_id}</span>
         </body>
         </html>
       `,

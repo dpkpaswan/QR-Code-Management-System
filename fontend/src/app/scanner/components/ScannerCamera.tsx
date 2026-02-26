@@ -26,32 +26,17 @@ interface Props {
 export default function ScannerCamera({ coordinatorName, onNewEntry }: Props) {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
-  const [dismissTimer, setDismissTimer] = useState(0);
   const [cameraError, setCameraError] = useState('');
   const [noCoordWarning, setNoCoordWarning] = useState(false);
   const scannerRef = useRef<unknown>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const processingRef = useRef(false);
 
   const dismissResult = useCallback(() => {
     setResult(null);
-    setDismissTimer(0);
     processingRef.current = false;
-    if (timerRef.current) clearInterval(timerRef.current);
   }, []);
 
-  const startDismissCountdown = useCallback((seconds: number) => {
-    setDismissTimer(seconds);
-    timerRef.current = setInterval(() => {
-      setDismissTimer(prev => {
-        if (prev <= 1) {
-          dismissResult();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, [dismissResult]);
+  // Auto-dismiss removed: user must manually dismiss result via button
 
   const handleScan = useCallback(async (decodedText: string) => {
     if (processingRef.current) return;
@@ -73,17 +58,11 @@ export default function ScannerCamera({ coordinatorName, onNewEntry }: Props) {
 
       if (data.status === 'success') {
         onNewEntry();
-        startDismissCountdown(4);
-      } else if (data.status === 'duplicate') {
-        startDismissCountdown(4);
-      } else {
-        startDismissCountdown(3);
       }
     } catch {
       setResult({ status: 'error', error: 'Network error. Please try again.' });
-      startDismissCountdown(3);
     }
-  }, [coordinatorName, onNewEntry, startDismissCountdown]);
+  }, [coordinatorName, onNewEntry]);
 
   useEffect(() => {
     let html5QrCode: unknown;
@@ -116,7 +95,6 @@ export default function ScannerCamera({ coordinatorName, onNewEntry }: Props) {
           }).catch(() => {});
         } catch {}
       }
-      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [handleScan]);
 
@@ -251,11 +229,7 @@ export default function ScannerCamera({ coordinatorName, onNewEntry }: Props) {
               </div>
             )}
 
-            {/* Countdown & Dismiss */}
             <div className="flex items-center justify-center gap-3">
-              <div className="w-8 h-8 rounded-full border-2 border-white/40 flex items-center justify-center">
-                <span className="text-sm font-bold text-white">{dismissTimer}</span>
-              </div>
               <button onClick={dismissResult} className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
                 style={{ background: 'rgba(0,0,0,0.3)' }}>
                 Dismiss

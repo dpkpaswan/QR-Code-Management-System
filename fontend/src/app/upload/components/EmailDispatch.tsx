@@ -328,22 +328,6 @@ export default function EmailDispatch() {
           className="rounded-xl overflow-hidden"
           style={{ border: '1px solid rgba(59,130,246,0.15)' }}
         >
-          <div
-            className="px-4 py-3 flex items-center gap-2"
-            style={{
-              background: 'rgba(10,10,20,0.8)',
-              borderBottom: '1px solid rgba(59,130,246,0.1)',
-            }}
-          >
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-rose-500 opacity-50" />
-              <div className="w-3 h-3 rounded-full bg-amber-500 opacity-50" />
-              <div className="w-3 h-3 rounded-full bg-emerald-500 opacity-50" />
-            </div>
-            <span className="text-xs ml-2" style={{ color: '#334155' }}>
-              Email Preview
-            </span>
-          </div>
           <div className="p-6" style={{ background: 'rgba(15,15,30,0.6)' }}>
             <div className="max-w-sm mx-auto text-center">
               <div
