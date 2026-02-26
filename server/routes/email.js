@@ -56,8 +56,11 @@ const generateEmailTemplate = (participant) => {
     .qr-box img { width: 220px; height: 220px; display: block; }
     .qr-warning { margin-top: 12px; font-size: 12px; color: #94a3b8; }
 
-    .participant-details { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #cbd5e1; text-align: center; }
-    .participant-details p { margin: 6px 0; font-size: 15px; color: #334155; line-height: 1.5; }
+    .participant-card { margin: 0 28px 24px; background: #f8faff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; }
+    .participant-card .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+    .participant-card .row:last-child { border-bottom: none; }
+    .participant-card .label { color: #64748b; font-weight: 500; }
+    .participant-card .value { color: #1e293b; font-weight: 600; text-align: right; }
 
     .instructions { margin: 0 28px 24px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px 20px; }
     .instructions h3 { margin: 0 0 12px; font-size: 14px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -108,18 +111,29 @@ const generateEmailTemplate = (participant) => {
       <p>Please find your unique Entry QR Code attached with this email. This QR code is your <strong>official entry pass</strong>.</p>
     </div>
 
-    <!-- QR Code and Participant Details -->
+    <!-- QR Code -->
     <div class="qr-section">
       <p class="qr-label">Your Official Entry Pass</p>
       <div class="qr-box">
-        <img src="cid:qrcode" alt="Entry QR Code" style="margin: 0 auto;" />
-        <div class="participant-details">
-          <p><strong>Participant ID:</strong> <strong style="color:#4f46e5;">${participant.participant_id}</strong></p>
-          <p><strong>Name:</strong> <strong>${participant.name}</strong></p>
-          <p><strong>College:</strong> <strong>${participant.college_name}</strong></p>
-        </div>
+        <img src="cid:qrcode" alt="Entry QR Code" />
       </div>
       <p class="qr-warning">📱 Screenshot this QR code for offline access</p>
+    </div>
+
+    <!-- Participant Details -->
+    <div class="participant-card">
+      <div class="row">
+        <span class="label">Participant ID</span>
+        <span class="value" style="color:#667eea;">${participant.participant_id}</span>
+      </div>
+      <div class="row">
+        <span class="label">Name</span>
+        <span class="value">${participant.name}</span>
+      </div>
+      <div class="row">
+        <span class="label">College</span>
+        <span class="value">${participant.college_name}</span>
+      </div>
     </div>
 
     <!-- Important Instructions -->
