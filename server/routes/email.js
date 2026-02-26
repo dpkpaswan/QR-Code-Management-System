@@ -191,7 +191,18 @@ const generateEmailHTML = (participant) => `<!DOCTYPE html>
     <p style="margin:0 0 6px;color:#065f46;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">📞 Contact Us</p>
     <p style="margin:0 0 4px;color:#166534;font-size:13px;">For any queries, feel free to contact:</p>
     <p style="margin:0 0 3px;color:#166534;font-size:13px;"><strong>Mr. Alwin Infant E</strong> — +91 7708179387</p>
-    <p style="margin:0;color:#166534;font-size:13px;"><strong>Mr. Siddarth G</strong> — +91 6369-825339</p>
+      <p style="margin:0;color:#166534;font-size:13px;"><strong>Mr. Siddarth G</strong> — +91 6369-825339</p>
+    <div style="margin:0 22px 18px;background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:14px 16px;">
+      <p style="margin:0 0 8px;color:#92400e;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">⚠️ Important Instructions</p>
+      <ul style="margin:0;padding-left:16px;">
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">Bring this QR code <strong>(printed copy or on your mobile)</strong> on both event days.</li>
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">Carry your college ID card for identification.</li>
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">This QR is valid for both days of the event.</li>
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">Reporting Time: 09:00 AM</li>
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">Registration will happen on both days.</li>
+        <li style="color:#78350f;font-size:13px;line-height:1.9;">After completing registration, you can proceed to your allotted venue.</li>
+      </ul>
+    </div>
   </div>
 
   <div style="background:#1e293b;padding:18px 24px;text-align:center;">
