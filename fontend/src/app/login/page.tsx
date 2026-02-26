@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, AlertCircle, Shield, User } from 'lucide-react';
 import { api } from '@/lib/api';
-import { setToken, setUserInfo, getDefaultPage, getToken, getUserInfo } from '@/lib/auth';
+import { setToken, setUserInfo, getDefaultPage } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,17 +16,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [shake, setShake] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    const token = getToken();
-    const user = getUserInfo();
-    if (token && user) {
-      router.replace(getDefaultPage(user.role));
-      return; // let redirect happen
-    }
-    setCheckingAuth(false);
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,17 +45,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
-  if (checkingAuth) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: '#0A0A0F' }}
-      >
-        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div
@@ -235,6 +213,31 @@ export default function LoginPage() {
               'SIGN IN'
             )}
           </button>
+
+          {/* Credit below Sign In */}
+          <div className="mt-4 flex justify-center">
+            <p
+              className="text-xs px-4 py-2 rounded-full"
+              style={{
+                background: 'rgba(59,130,246,0.12)',
+                border: '1px solid rgba(59,130,246,0.4)',
+                boxShadow: '0 0 16px rgba(59,130,246,0.25), inset 0 0 10px rgba(59,130,246,0.08)',
+                color: '#93c5fd',
+                letterSpacing: '0.02em',
+              }}
+            >
+              ✨ Website Developed by{' '}
+              <span style={{
+                fontWeight: 800,
+                color: '#60a5fa',
+                textShadow: '0 0 8px rgba(59,130,246,0.8), 0 0 16px rgba(59,130,246,0.4)',
+              }}>
+                Deepak Paswan
+              </span>
+              {' '}
+              <span style={{ color: '#7dd3fc', fontWeight: 500 }}>(B.Com ISM – 2nd Year)</span>
+            </p>
+          </div>
         </form>
 
         {/* Footer note */}
@@ -242,6 +245,7 @@ export default function LoginPage() {
           Protected by EventQR Manager • v2.0
         </p>
       </motion.div>
+
     </div>
   );
 }
