@@ -11,6 +11,7 @@ const scannerRoutes = require('./routes/scanner');
 const entriesRoutes = require('./routes/entries');
 const statsRoutes = require('./routes/stats');
 const eventDaysRoutes = require('./routes/eventDays');
+const diagnosticsRoutes = require('./routes/diagnostics');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use('/api/scanner', scannerRoutes);
 app.use('/api/entries', entriesRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/event-days', eventDaysRoutes);
+app.use('/api/diagnostics', diagnosticsRoutes);
 
 app.get('/api/health', (req, res) => {
     logger.info('health check');

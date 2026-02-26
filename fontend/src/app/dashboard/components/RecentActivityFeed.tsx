@@ -11,31 +11,34 @@ export default function RecentActivityFeed() {
 
   const fetchRecent = async () => {
     setError('');
-    const { data, error: err } = await supabase
-      .from('entries')
-      .select('*')
-      .order('scanned_at', { ascending: false })
-      .limit(10);
+    setLoading(true);
+    try {
+      const { data, error: err } = await supabase
+        .from('entries')
+        .select('*')
+        .order('scanned_at', { ascending: false });
 
-    if (err) {
-      setError(err.message);
-    } else {
-      setEntries(data || []);
+      if (err) {
+        setError(err.message);
+        setEntries([]);
+      } else {
+        setEntries(data || []);
+      }
+    } catch (e: any) {
+      setError(e?.message || 'Failed to load recent activity');
+      setEntries([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchRecent();
     const channel = supabase
       .channel('dashboard-recent-entries')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'entries' },
-        (payload) => {
-          setEntries((prev) => [payload.new as Entry, ...prev].slice(0, 10));
-        }
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'entries' }, (payload) => {
+        setEntries((prev) => [payload.new as Entry, ...prev]);
+      })
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -108,16 +111,20 @@ export default function RecentActivityFeed() {
         ) : (
           <table className="w-full data-table">
             <thead>
-              <tr>
-                <th>Name</th>
-                <th>College</th>
-                <th>Day</th>
-                <th>Time</th>
-              </tr>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>College</th>
+                  <th>Day</th>
+                  <th>Time</th>
+                </tr>
             </thead>
             <tbody>
               {entries.map((entry) => (
                 <tr key={entry.id} className="slide-in-top">
+                  <td className="font-mono" style={{ color: '#3B82F6' }}>
+                    {entry.participant_id || '—'}
+                  </td>
                   <td className="font-medium" style={{ color: '#F1F5F9' }}>
                     {entry.name || '—'}
                   </td>
