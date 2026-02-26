@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { QrCode } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -57,9 +57,9 @@ export default function ScannerPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleNewEntry = () => {
+  const handleNewEntry = useCallback(() => {
     setFeedRefresh((prev) => prev + 1);
-  };
+  }, []);
 
   if (!authorized) {
     return (
