@@ -102,7 +102,7 @@ const generateEmailHTML = (participant) => `<!DOCTYPE html>
 
     <div style="margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
       <div style="background:linear-gradient(90deg,#667eea,#764ba2);padding:8px 14px;">
-        <span style="color:#fff;font-size:12px;font-weight:800;">📌 DAY 1 — Thursday, 27 February 2026</span>
+        <span style="color:#fff;font-size:12px;font-weight:800;">📌 DAY 1 — Friday, 27 February 2026</span>
       </div>
       <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
         <tr style="background:#f1f5f9;">
@@ -140,7 +140,7 @@ const generateEmailHTML = (participant) => `<!DOCTYPE html>
 
     <div style="margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
       <div style="background:linear-gradient(90deg,#667eea,#764ba2);padding:8px 14px;">
-        <span style="color:#fff;font-size:12px;font-weight:800;">📌 DAY 2 — Friday, 28 February 2026</span>
+        <span style="color:#fff;font-size:12px;font-weight:800;">📌 DAY 2 — Saturday, 28 February 2026</span>
       </div>
       <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
         <tr style="background:#f1f5f9;">
